@@ -1,89 +1,132 @@
-
 <template>
-  <div class="page-container">
-    <md-app>
-      <md-app-toolbar class="md-primary" md-elevation="0">
-        <md-button class="md-icon-button" @click="toggleMenu" v-if="!menuVisible">
-           <div>
-      <md-icon md-src="/assets/reorder-24px.svg" />
-        </div>
-        </md-button>
-         <div>
-      <md-icon md-src="/assets/reorder-24px.svg" />
-        </div>
-        <span class="md-title">My Title</span>
-      </md-app-toolbar>
+  <div class="centered-container">
+    <md-content class="md-elevation-3">
+<img src="https://uploads-ssl.webflow.com/56a1006de9a99a4669bfd05c/5bc49b720bc683b8ffabc6d7_Logo-ESC-SolutionS.png">
+      <div class="title">
+        
+      </div>
 
-      <md-app-drawer :md-active.sync="menuVisible" md-persistent="mini">
-        <md-toolbar class="md-transparent" md-elevation="0">
-          <md-list-item>
-          <md-avatar>
-            <img src="https://placeimg.com/40/40/people/6" alt="People">
-          </md-avatar>
-          <span class="md-list-item-text">Mary Johnson</span>
-        </md-list-item>
+      <div class="form">
+        <md-field>
+          <label>Usuario</label>
+          <md-input v-model="usuario" autofocus></md-input>
+        </md-field>
 
-          <div class="md-toolbar-section-end">
-            <md-button class="md-icon-button md-dense" @click="toggleMenu">
-            </md-button>
-          </div>
-        </md-toolbar>
+        <md-field md-has-password>
+          <label>Password</label>   
+          <md-input v-model="password" type="password"></md-input>
+        </md-field>
+      </div>
 
-          <md-list-item>
-            <md-button class="dos" @click="toggleMenu">Perfil</md-button> 
-          </md-list-item>
+      <div class="actions md-layout md-alignment-center">
+        <md-button class="md-raised md-primary" @click="auth">Log in</md-button>
+      </div>
 
-          <md-list-item>
-            <md-button class="uno" @click="toggleMenu">Solicitudes</md-button>
-          </md-list-item>
+      <div class="loading-overlay" v-if="loading">
+        <md-progress-spinner md-mode="indeterminate" :md-stroke="2"></md-progress-spinner>
+      </div>
 
-        </md-list>
-      </md-app-drawer>
-
-      <md-app-content>
-      </md-app-content>
-    </md-app>
+    </md-content>
+    <div class="background" />
   </div>
 </template>
 
 <script>
-  export default {
-    name: 'HelloWorld',
-    data: () => ({
-      // eslint-disable-next-line 
-      menuVisible: false
-    }),// eslint-disable-next-line 
-    methods: {
-      // eslint-disable-next-line 
-      toggleMenu () {
+import axios from 'axios'
+export default {
+  name: "App",
+  data() {
+    return {
+      loading: false,
+        usuario: "",
+        password: "",
+        response:""
+    };
+  },
+  methods: {
+    auth() {
+      // your code to login user  
+      // eslint-disable-next-line
+      console.log("Entrar");
+      axios.post('http://localhost:3000/login',{
+          usuario:this.usuario,
+          password:this.password
+      })
+      .then(response => {
         // eslint-disable-next-line 
-        this.menuVisible = !this.menuVisible
-        // eslint-disable-next-line 
-      }
-      // eslint-disable-next-line 
+        console.log(response.data)
+        this.$router.push(this.$route.query.redirect || '/empleados')
+      }).catch(e => {
+      this.errors.push(e)
+    })
+      // this is only for example of loading
+      this.loading = true;
+      setTimeout(() => {
+        this.loading = false;
+      }, 5000);
     }
-    // eslint-disable-next-line 
   }
+};
 </script>
 
-<style lang="scss" scoped>
-  .md-app {
-    min-height: 350px;
-    border: 1px solid rgba(#000, .12);
+<style lang="scss">
+.centered-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  height: 100vh;
+  .title {
+    text-align: center;
+    margin-bottom: 30px;
+    img {
+      margin-bottom: 16px;
+      max-width: 80px;
+    }
   }
-
-   // Demo purposes only
-  .md-drawer {
-    width: 230px;
-    max-width: calc(100vw - 125px);
+  .actions {
+    .md-button {
+      margin: 0;
+    }
   }
+  .form {
+    margin-bottom: 60px;
+  }
+  .background {
+    background: url(https://wallpaperaccess.com/full/1101309.jpg);
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    z-index: 0;
+  }
+  .md-content {
+    z-index: 1;
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+    position: relative;
+  }
+  .img{
+    width:50%;
+    height:50%;
+  }
+  .loading-overlay {
+    z-index: 10;
+    top: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
 </style>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss">
-  .md-toolbar + .md-toolbar {
-    margin-top: 16px;
-    background-color: blue;
-    background-image: image("/assets/examples/logo.png")
-  }
-</style>
+  

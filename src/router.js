@@ -1,3 +1,4 @@
+/* eslint-disable */
 import Vue from 'vue';
 import Router from 'vue-router';
 import Home from './views/Home.vue';
@@ -19,5 +20,11 @@ export default new Router({
       name: 'about',
       component: () => import(/* webpackChunkName: "about" */ './views/About.vue'),
     }, 
+
+    {
+      path: '/empleados',
+      name: 'empleados',
+      component: () => import(/* webpackChunkName: "empleados" */ './views/empleados.vue'),
+    },
   ],
 });
